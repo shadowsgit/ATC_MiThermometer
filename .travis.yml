@@ -14,3 +14,5 @@ deploy:
   file: 
   - ATC_Thermometer.bin
   skip_cleanup: true
+  on:
+    all_branches: true
