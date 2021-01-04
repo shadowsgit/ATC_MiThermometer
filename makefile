@@ -46,12 +46,12 @@ GCC_FLAGS += $(TEL_CHIP)
 LS_FLAGS := $(PROJECT_PATH)/boot.link
 
 #include SDK makefile
--include $(TEL_PATH)/make/application.mk
--include $(TEL_PATH)/make/common.mk
+#-include $(TEL_PATH)/make/application.mk
+#-include $(TEL_PATH)/make/common.mk
 -include $(TEL_PATH)/make/drivers_8258.mk
--include $(TEL_PATH)/make/vendor_common.mk
--include $(TEL_PATH)/make/tinyFlash.mk
--include $(PROJECT_PATH)/div_mod.mk
+#-include $(TEL_PATH)/make/vendor_common.mk
+#-include $(TEL_PATH)/make/tinyFlash.mk
+#-include $(PROJECT_PATH)/div_mod.mk
 
 ifeq ($(USE_FREE_RTOS), 1)
 -include $(TEL_PATH)/make/freertos.mk
