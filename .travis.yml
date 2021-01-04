@@ -1,12 +1,10 @@
 language: c
 
 script:
-  - wget http://shyboy.oss-cn-shenzhen.aliyuncs.com/readonly/tc32_gcc_v2.0.tar.bz2  && tar -xvjf tc32_gcc_v2.0.tar.bz2 -C /opt/
+  - git clone https://github.com/shadowsgit/telink_compiler && tar -xvjf tc32_gcc_v2.0.tar.bz2 -C /opt/
   - git clone https://github.com/Ai-Thinker-Open/Telink_825X_SDK
   - export PATH=$PATH:/opt/tc32/bin
   - make -j TEL_PATH=./Telink_825X_SDK 
-  - ls ./out
-  - ls
 
 deploy:
   provider: releases
