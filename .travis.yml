@@ -2,13 +2,13 @@ language: c
 
 script:
   - git clone https://github.com/shadowsgit/telink_compiler 
-  - tar -xvjf telink_compiler/tc32_gcc_v2.0.tar.bz2 -C /opt/
+  - tar -xjf telink_compiler/tc32_gcc_v2.0.tar.bz2 -C /opt/
   - git clone https://github.com/Ai-Thinker-Open/Telink_825X_SDK
   - export PATH=$PATH:/opt/tc32/bin
   - make -j TEL_PATH=./Telink_825X_SDK 
 
 before_deploy:
-      - export TRAVIS_TAG=${TRAVIS_TAG:-$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)}
+      - export TRAVIS_TAG=${TRAVIS_TAG:-$(date +'%Y%m%d_%H%M%S')-$(git log --format=%h -1)}
       - git tag $TRAVIS_TAG
 deploy:
   provider: releases
