@@ -1,0 +1,4 @@
+language: c
+
+script:
+  - wget http://shyboy.oss-cn-shenzhen.aliyuncs.com/readonly/tc32_gcc_v2.0.tar.bz2
