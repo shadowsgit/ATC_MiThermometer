@@ -8,8 +8,8 @@ extern "C" {
 //#define PC3_INPUT_ENABLE	1
 //#define PB6_INPUT_ENABLE	1
 
-#define VERSION 0x08
-#define EEP_SUP_VER 0x05 // EEP data minimum supported version
+#define VERSION 0x09
+#define EEP_SUP_VER 0x09 // EEP data minimum supported version
 
 #define USE_TRIGGER_OUT 1 // use trigger out (GPIO_PA5)
 
@@ -67,13 +67,17 @@ typedef enum
 	BATT_LEVEL_INPUT_DP_H,					//UUID: 2A19 	VALUE: batVal
 	BATT_LEVEL_INPUT_CCB_H,					//UUID: 2902, 	VALUE: batValCCC
 
-	//// Temp service ////
+	//// Temp/Humi service ////
 	/**********************************************************************************************/
 	TEMP_PS_H, 								//UUID: 2800, 	VALUE: uuid 181A
 	TEMP_LEVEL_INPUT_CD_H,					//UUID: 2803, 	VALUE:  			Prop: Read | Notify
 	TEMP_LEVEL_INPUT_DP_H,					//UUID: 2A19 	VALUE: tempVal
 	TEMP_LEVEL_INPUT_CCB_H,					//UUID: 2902, 	VALUE: tempValCCC
 	
+	TEMP2_LEVEL_INPUT_CD_H,					//UUID: 2803, 	VALUE:  			Prop: Read | Notify
+	TEMP2_LEVEL_INPUT_DP_H,					//UUID: 2A19 	VALUE: tempVal
+	TEMP2_LEVEL_INPUT_CCB_H,				//UUID: 2902, 	VALUE: tempValCCC
+
 	HUMI_LEVEL_INPUT_CD_H,					//UUID: 2803, 	VALUE:  			Prop: Read | Notify
 	HUMI_LEVEL_INPUT_DP_H,					//UUID: 2A19 	VALUE: humiVal
 	HUMI_LEVEL_INPUT_CCB_H,					//UUID: 2902, 	VALUE: humiValCCC

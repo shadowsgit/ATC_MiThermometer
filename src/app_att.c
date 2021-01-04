@@ -49,16 +49,15 @@ static const u8 my_PnPtrs [] = {0x02, 0x8a, 0x24, 0x66, 0x82, 0x01, 0x00};
 static const u16 my_batServiceUUID        = SERVICE_UUID_BATTERY;
 static const u16 my_batCharUUID       	  = CHARACTERISTIC_UUID_BATTERY_LEVEL;
 RAM u8 batteryValueInCCC[2];
-RAM u8 my_batVal[1] 	= {100};
 
 //////////////////////// Temp /////////////////////////////////////////////////
 static const u16 my_tempServiceUUID       = 0x181A;
-static const u16 my_tempCharUUID       	  = 0x2A1F;
-static const u16 my_humiCharUUID       	  = 0x2A6F;
+static const u16 my_tempCharUUID       	  = 0x2A1F; //
+static const u16 my_temp2CharUUID      	  = 0x2A6E; // https://github.com/oesmith/gatt-xml/blob/master/org.bluetooth.characteristic.temperature.xml
+static const u16 my_humiCharUUID       	  = 0x2A6F; // https://github.com/oesmith/gatt-xml/blob/master/org.bluetooth.characteristic.humidity.xml
 RAM u8 tempValueInCCC[2];
-RAM u8 my_tempVal[2] 	= {0};
+RAM u8 temp2ValueInCCC[2];
 RAM u8 humiValueInCCC[2];
-RAM u8 my_humiVal[2] 	= {0};
 
 /////////////////////////////////////////////////////////
 static const  u8 my_OtaUUID[16]					    = TELINK_SPP_DATA_OTA;
@@ -117,6 +116,11 @@ static const u8 my_tempCharVal[5] = {
 	U16_LO(TEMP_LEVEL_INPUT_DP_H), U16_HI(TEMP_LEVEL_INPUT_DP_H),
 	U16_LO(0x2A1F), U16_HI(0x2A1F)
 };
+static const u8 my_temp2CharVal[5] = {
+	CHAR_PROP_READ | CHAR_PROP_NOTIFY,
+	U16_LO(TEMP_LEVEL_INPUT_DP_H), U16_HI(TEMP_LEVEL_INPUT_DP_H),
+	U16_LO(0x2A6E), U16_HI(0x2A6E)
+};
 
 //// Humi attribute values
 static const u8 my_humiCharVal[5] = {
@@ -160,17 +164,21 @@ static const attribute_t my_Attributes[] = {
 	// 002a - 002d
 	{4,ATT_PERMISSIONS_READ,2,2,(u8*)(&my_primaryServiceUUID), 	(u8*)(&my_batServiceUUID), 0},
 	{0,ATT_PERMISSIONS_READ,2,sizeof(my_batCharVal),(u8*)(&my_characterUUID), (u8*)(my_batCharVal), 0},				//prop
-	{0,ATT_PERMISSIONS_READ,2,sizeof(my_batVal),(u8*)(&my_batCharUUID), 	(u8*)(my_batVal), 0},	//value
+	{0,ATT_PERMISSIONS_READ,2,sizeof(battery_level),(u8*)(&my_batCharUUID), 	(u8*)(&battery_level), 0},	//value
 	{0,ATT_PERMISSIONS_RDWR,2,sizeof(batteryValueInCCC),(u8*)(&clientCharacterCfgUUID), 	(u8*)(batteryValueInCCC), 0},	//value
 	////////////////////////////////////// Temp Service /////////////////////////////////////////////////////
 	// 002a - 002d
-	{7,ATT_PERMISSIONS_READ,2,2,(u8*)(&my_primaryServiceUUID), 	(u8*)(&my_tempServiceUUID), 0},
+	{10,ATT_PERMISSIONS_READ,2,2,(u8*)(&my_primaryServiceUUID), (u8*)(&my_tempServiceUUID), 0},
 	{0,ATT_PERMISSIONS_READ,2,sizeof(my_tempCharVal),(u8*)(&my_characterUUID), (u8*)(my_tempCharVal), 0},				//prop
-	{0,ATT_PERMISSIONS_READ,2,sizeof(my_tempVal),(u8*)(&my_tempCharUUID), 	(u8*)(my_tempVal), 0},	//value
+	{0,ATT_PERMISSIONS_READ,2,sizeof(last_temp),(u8*)(&my_tempCharUUID), 	(u8*)(&last_temp), 0},	//value
 	{0,ATT_PERMISSIONS_RDWR,2,sizeof(tempValueInCCC),(u8*)(&clientCharacterCfgUUID), 	(u8*)(tempValueInCCC), 0},	//value
 
+	{0,ATT_PERMISSIONS_READ,2,sizeof(my_temp2CharVal),(u8*)(&my_characterUUID), (u8*)(my_temp2CharVal), 0},				//prop
+	{0,ATT_PERMISSIONS_READ,2,sizeof(measured_data.temp),(u8*)(&my_temp2CharUUID), 	(u8*)(&measured_data.temp), 0},	//value
+	{0,ATT_PERMISSIONS_RDWR,2,sizeof(temp2ValueInCCC),(u8*)(&clientCharacterCfgUUID), 	(u8*)(temp2ValueInCCC), 0},	//value
+
 	{0,ATT_PERMISSIONS_READ,2,sizeof(my_humiCharVal),(u8*)(&my_characterUUID), (u8*)(my_humiCharVal), 0},				//prop
-	{0,ATT_PERMISSIONS_READ,2,sizeof(my_humiVal),(u8*)(&my_humiCharUUID), 	(u8*)(my_humiVal), 0},	//value
+	{0,ATT_PERMISSIONS_READ,2,sizeof(measured_data.humi),(u8*)(&my_humiCharUUID), 	(u8*)(&measured_data.humi), 0},	//value
 	{0,ATT_PERMISSIONS_RDWR,2,sizeof(humiValueInCCC),(u8*)(&clientCharacterCfgUUID), 	(u8*)(humiValueInCCC), 0},	//value
 	////////////////////////////////////// OTA /////////////////////////////////////////////////////
 	// 002e - 0031
