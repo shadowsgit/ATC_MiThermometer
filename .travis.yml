@@ -6,3 +6,4 @@ script:
   - export PATH=$PATH:/opt/tc32/bin
   - make -j TEL_PATH=./Telink_825X_SDK 
   - ls ./out
+  - ls
