@@ -70,11 +70,16 @@ static const external_data_t def_ext = {
 RAM external_data_t ext;
 
 void test_config(void) {
-	cfg.rf_tx_power |= BIT(7);
-	if (cfg.rf_tx_power < RF_POWER_N25p18dBm)
-		cfg.rf_tx_power = RF_POWER_N25p18dBm;
-	else if (cfg.rf_tx_power > RF_POWER_P3p01dBm)
-		cfg.rf_tx_power = RF_POWER_P3p01dBm;
+	if(cfg.rf_tx_power &BIT(7)) {
+		if (cfg.rf_tx_power < RF_POWER_N25p18dBm)
+			cfg.rf_tx_power = RF_POWER_N25p18dBm;
+		else if (cfg.rf_tx_power > RF_POWER_P3p01dBm)
+			cfg.rf_tx_power = RF_POWER_P3p01dBm;
+	} else { if (cfg.rf_tx_power < RF_POWER_P3p23dBm)
+		cfg.rf_tx_power = RF_POWER_P3p23dBm;
+	else if (cfg.rf_tx_power > RF_POWER_P10p46dBm)
+		cfg.rf_tx_power = RF_POWER_P10p46dBm;
+	}
 	if (cfg.measure_interval == 0)
 		cfg.measure_interval = 1; // x1, T = cfg.measure_interval * advertising_interval_ms (ms),  Tmin = 1 * 1*62.5 = 62.5 ms / 1 * 160 * 62.5 = 10000 ms
 	else if (cfg.measure_interval > 10)
@@ -193,6 +198,8 @@ _attribute_ram_code_ void user_init_normal(void) {//this will get executed one t
 				clock_time() + 120 * CLOCK_16M_SYS_TIMER_CLK_1S); // go deepsleep
 	}
 	init_lcd();
+	read_sensor_low_power();
+	WakeupLowPowerCb(0);
 	//	show_atc_mac();
 	ev_adv_timeout(0, 0, 0);
 }
@@ -318,9 +325,11 @@ _attribute_ram_code_ void main_loop(void) {
 					measured_data.battery_mv = get_battery_mv();
 					battery_level = get_battery_level(measured_data.battery_mv);
 					WakeupLowPowerCb(0);
-					bls_pm_setAppWakeupLowPower(0, 0);
+					//bls_pm_setAppWakeupLowPower(0, 0);
 				} else {
 					read_sensor_deep_sleep();
+					measured_data.battery_mv = get_battery_mv();
+					battery_level = get_battery_level(measured_data.battery_mv);
 					if (bls_pm_getSystemWakeupTick() - clock_time() > SENSOR_MEASURING_TIMEOUT + 5*CLOCK_16M_SYS_TIMER_CLK_1MS) {
 						bls_pm_registerAppWakeupLowPowerCb(WakeupLowPowerCb);
 						bls_pm_setAppWakeupLowPower(timer_measure_cb + SENSOR_MEASURING_TIMEOUT, 1);
