@@ -13,6 +13,7 @@ extern u8 tempValueInCCC[2];
 extern u8 temp2ValueInCCC[2];
 extern u8 humiValueInCCC[2];
 extern u8 RxTxValueInCCC[2];
+extern uint8_t send_buf[16];
 
 typedef struct
 {
@@ -30,7 +31,7 @@ extern gap_periConnectParams_t my_periConnParameters;
 // GATT Service 0x181A Environmental Sensing
 // All data little-endian
 typedef struct __attribute__((packed)) _adv_custom_t {
-	uint8_t		size;	// = 18
+	uint8_t		size;	// = 19
 	uint8_t		uid;	// = 0x16, 16-bit UUID
 	uint16_t	UUID;	// = 0x181A, GATT Service 0x181A Environmental Sensing
 	uint8_t		MAC[6]; // [0] - lo, .. [6] - hi digits
@@ -38,7 +39,7 @@ typedef struct __attribute__((packed)) _adv_custom_t {
 	uint16_t	humidity; // x 0.01 %
 	uint16_t	battery_mv; // mV
 	uint8_t		battery_level; // 0..100 %
-	uint8_t		counter; // measurement number
+	uint8_t		counter; // measurement count
 	uint8_t		flags; 
 } adv_custom_t, * padv_custom_t;
 
@@ -53,7 +54,7 @@ typedef struct __attribute__((packed)) _adv_atc1441_t {
 	uint8_t		humidity; // x 1 %
 	uint8_t		battery_level; // 0..100 %
 	uint8_t		battery_mv[2]; // mV (big-endian!)
-	uint8_t		counter; // measurement number
+	uint8_t		counter; // measurement count
 } adv_atc1441_t, * padv_atc1441_t;
 
 
@@ -65,7 +66,7 @@ typedef struct __attribute__((packed)) _adv_mi_t {
 	uint16_t	UUID;	// = 0xFE95, 16-bit UUID for Members 0xFE95 Xiaomi Inc.
 	uint16_t	ctrl;	// = 0x3050 Frame ctrl
 	uint16_t    dev_id; // = 0x055B	Device type
-	uint8_t		counter; // 0..0xff..0 frame cnt
+	uint8_t		counter; // 0..0xff..0 measurement count
 	uint8_t		MAC[6];	// [0] - lo, .. [6] - hi digits
 	// +15: 0x0A, 0x10, 0x01, t_lv, 0x02, b_lo, b_hi
 	// +15: 0x0D, 0x10, 0x04, t_lo, t_hi, h_lo, h_hi
@@ -80,13 +81,13 @@ typedef struct __attribute__((packed)) _adv_mi_t {
 		}t0a;
 		struct {
 			uint8_t		len; // = 0x04
-			int16_t		temperature; // x 0.01 degree ?
-			uint16_t	humidity; // x 0.01 % ?
+			int16_t		temperature; // x0.1 C
+			uint16_t	humidity; // x0.1 %
 		}t0d;
 	};
 } adv_mi_t, * padv_mi_t;
 
-void set_adv_data(uint8_t adv_type); // 0 - Custom, 1 - Mi, 2 - atc1441
+void set_adv_data(uint8_t adv_type); // 0 - atc1441, 1 - Custom, 2 - Mi, 3 - all
 
 extern u8 my_RxTx_Data[16];
 
@@ -94,6 +95,7 @@ void init_ble();
 bool ble_get_connected();
 void ble_send_measures(void);
 void ble_send_ext(void);
+void ble_send_lcd(void);
 #if USE_TRIGGER_OUT
 void ble_send_trg(void);
 void ble_send_trg_flg(void);

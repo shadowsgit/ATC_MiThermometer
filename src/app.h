@@ -13,7 +13,7 @@
 
 typedef struct __attribute__((packed)) _cfg_t {
 	struct __attribute__((packed)) {
-		uint8_t advertising_type	: 2; // 0 - Custom, 1 - Mi, 2 - atc1441, 3 - All
+		uint8_t advertising_type	: 2; // 0 - atc1441, 1 - Custom, 2 - Mi, 3 - all
 		uint8_t comfort_smiley		: 1;
 		uint8_t blinking_smiley		: 1;
 		uint8_t temp_F_or_C			: 1;
@@ -88,6 +88,17 @@ extern volatile uint8_t start_measure; // start measure all
 extern volatile uint8_t wrk_measure;
 extern volatile uint8_t end_measure;
 extern uint32_t tim_measure;
+
+typedef union _lcd_flg_t {
+	struct  {
+		uint8_t ext_data: 	1; // LCD show external data
+		uint8_t notify_on: 	1; // Send LCD dump if Notify on
+		uint8_t res:  		5;
+		uint8_t new_update: 1; // flag update LCD for send notify
+	}b;
+	uint8_t uc;
+} lcd_flg_t;
+extern lcd_flg_t lcd_flg;
 
 extern uint32_t adv_interval;
 extern uint32_t connection_timeout;
